@@ -4,9 +4,11 @@ namespace QuinntyneBrown.GoogleMapApis
 {
     public static class ServiceCollectionExtensions
     {
-        public static void AddGoogleMapApisServices(this IServiceCollection services)
+        public static IServiceCollection AddGoogleMapApisServices(this IServiceCollection services, Action<GoogleMapApisOptions> options)
         {
+            services.Configure(options);
             services.AddSingleton<IGoogleMapsService, GoogleMapsService>();
+            return services;
         }
     }
 }

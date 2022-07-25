@@ -1,26 +1,28 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Options;
 
 namespace QuinntyneBrown.GoogleMapApis
 {
     internal class GoogleMapsService : IGoogleMapsService
     {
         private readonly HttpClient _client;
-        private readonly IConfiguration _configuration;
-        public GoogleMapsService(HttpClient client, IConfiguration configuration)
+        private readonly GoogleMapApisOptions _options;
+        public GoogleMapsService(HttpClient client, IOptions<GoogleMapApisOptions> optionsAccessor)
         {
             _client = client;
-            _configuration = configuration;
+            _options = optionsAccessor.Value;
         }
 
         public async Task<GoogleEncodeResponse> GetAddress(double latitude, double longitude)
         {
-            var url = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={latitude},{longitude}&sensor=false&key={_configuration["GoogleMapsPlatform:ApiKey"]}";
+            var url = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={latitude},{longitude}&sensor=false&key={_options.ApiKey}";
+            
             return await _client.GetAsync<GoogleEncodeResponse>(url);
         }
 
         public async Task<GoogleEncodeResponse> GetCoordinates(string address)
         {
-            var url = $"https://maps.googleapis.com/maps/api/geocode/json?address={address}&sensor=false&key={_configuration["GoogleMapsPlatform:ApiKey"]}";
+            var url = $"https://maps.googleapis.com/maps/api/geocode/json?address={address}&sensor=false&key={_options.ApiKey}";
+            
             return await _client.GetAsync<GoogleEncodeResponse>(url);
         }
     }
